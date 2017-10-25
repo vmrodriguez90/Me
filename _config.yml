@@ -3,7 +3,7 @@
 
 # NB! Set your site's url, otherwise stuff will break :)
 
-url: "https://panossakkos.github.io"
+url: "https://vmrodriguez90.github.io"
 
 # If you're hosting your site at a Project repository on GitHub pages
 # (https://yourusername.github.io/repository-name)
@@ -16,7 +16,7 @@ baseurl: /Me
 
 # Google tracking id
 
-google-tracking-id: ""
+google-tracking-id: "UA-92283959-1"
 
 # Forces https everywhere in your website, except when you serve it locally
 # If you are not hosted on Github Pages, and your host doesn't support https
@@ -29,10 +29,10 @@ force-https: True
 #############
 
 lang: "en"
-author: "John Smith"
-title: "{ John Smith }"
-description: "Blog and website of John Smith, blogging mainly for tech. Opinions expressed are mine."
-keywords: "smith, jones, personal, jekyll, theme"
+author: "Victor Manuel Rodriguez"
+title: "{ Victor Manuel Rodriguez }"
+description: "Blog and website of Victor Manuel Rodriguez, Wed Developer, Tech lover."
+keywords: "vmrodriguez, Victor Manuel, Rodriguez, Web, Developer, Javascript, Typescript, .NET, C#, Mulesoft"
 favicon: "/img/favicon.ico"
 
 ################
@@ -55,10 +55,15 @@ type-speed: 10
 start-delay: 200
 delete-delay: 5000
 lines: # You can add HTML Tags in the Text
-  - text: "The lower you fall, the higher you'll fly."
-  - text: "Where’s your will to be weird?"
+  - text: "Yesterday is not ours to recover, but tomorrow is ours to win or lose."
+  - text: "You can choose to be positive or negative; I choose to be an positive cause it's all a matter of perspective."
+  - text: "Start where you are. Use what you have. Do what you can."
+  - text: "Don't let the fear of losing be greater than the excitement of winning."
+  - text: "The measure of who we are is what we do with what we have."
+  - text: "Rules for happiness, something to do, someone to love, something to hope for."
+  - text: "Today I will do what other's won't, so tomorrow I will do what others can't."
 
-me-img: "/img/jetpacktocat.png"
+me-img: "/img/author.png"
 
 ##############################
 # Color the browser elements #
@@ -102,7 +107,7 @@ pinterest-share: True
 pocket-share: True
 vkontakte-share: True
 
-disqus-shortname: "panossakkos"
+disqus-shortname: "vmrodriguez"
 
 syntax-highlight: True
 
@@ -126,7 +131,7 @@ timeline-img: "/img/timeline/default.png"
 # Contact #
 ###########
 
-email: "your@email.here"
+email: "victormanuelrodriguez90@gmail.com"
 
 ################
 # Author Blurb #
@@ -136,7 +141,7 @@ email: "your@email.here"
 # This works best when your author blurb image has a transparent background, or matches your site background color.
 
 # if the author_blurb is not set, then this feature is skipped
-author_blurb: "John Smith is an awesome person. He lives in Flatland, where he works on two-dimensional engineering projects. In his spare time, John likes to eat cotton candy."
+author_blurb: "Victor Manuel Rodriguez is a Pro-active Web Developer. He lives in Buenos Aires, Argentina, where he works on different technologies projects, like IoT, ConvoUX, AI, AR, VR, etc. In his spare time, Victor likes to play soccer, travels arount the world, drinks beer with friends and dances with everyone :P."
 author_blurb_image: "/img/author.png"
 
 ##################
@@ -145,27 +150,22 @@ author_blurb_image: "/img/author.png"
 
 social:
   - title: "facebook"
-    url: "https://facebook.com/"
-  - title: "twitter"
-    url: "https://twitter.com/"
+    url: "https://fb.me/vmrodriguez.com.ar"
   - title: "github"
-    url: "https://github.com/PanosSakkos/personal-jekyll-theme"
-  - title: "bitcoin"
-    url: "https://blockchain.info/address/1LHuKC9Em3KA5yoZaf7nngnNdf9K7s2gSi"
-  - title: "rss"
-    url: "/feed.xml"
+    url: "https://github.com/vmrodriguez90"
+  
 
 ############
 # 404 page #
 ############
 
-err-404-img: "/img/labtocat.png"
+err-404-img: "/img/wut.png"
 
 ##################
 # GPG on Keybase #
 ##################
 
-keybase-username: johnsmith
+keybase-username: vmrodriguez
 keybase-in-social: True
 keybase-in-footer: True
 
