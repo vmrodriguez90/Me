@@ -116,16 +116,25 @@ syntax-highlight: True
 ############
 
 events:
-  - image: "/img/timeline/spidertocat.png"
-    date: "September 2013 - Today"
-    description: "Saving the neighborhood!"
-  - image: "/img/timeline/baracktocat.jpg"
-    date: "September 2007 - August 2013"
-    description: "Started coding"
+  - image: "/img/timeline/work3.png"
+    date: "September 2015 - Continue Rocking"
+    description: "Technical Consultant at Solstice"
+  - image: "/img/timeline/work2.png"
+    date: "August 2013 - September 2015"
+    description: "SSr. Developer at Lagash Systems"
+  - image: "/img/timeline/work1.png"
+    date: "January 2010 - August 2013"
+    description: "Jr. Dev at Baufest"
+  - image: "/img/timeline/university.png"
+    date: "March 2009 - Not finished yet"
+    description: "IT Engineer not complete 😔"
+  - image: "/img/timeline/schoolout.png"
+    date: "March 2005 - December 2008"
+    description: "School out!"
 
 # First image of the Timeline
 
-timeline-img: "/img/timeline/default.png"
+timeline-img: "/img/timeline/babyme.png"
 
 ###########
 # Contact #
@@ -153,7 +162,11 @@ social:
     url: "https://fb.me/vmrodriguez.com.ar"
   - title: "github"
     url: "https://github.com/vmrodriguez90"
-  
+  - title: "twitter"
+    url: "https://twitter.com/vmrodriguez90"
+  - title: "linkedin"
+    url: "https://www.linkedin.com/in/vmrodriguez/"
+
 
 ############
 # 404 page #
@@ -166,8 +179,8 @@ err-404-img: "/img/wut.png"
 ##################
 
 keybase-username: vmrodriguez
-keybase-in-social: True
-keybase-in-footer: True
+keybase-in-social: False
+keybase-in-footer: False
 
 ################################################################################
 
@@ -196,4 +209,4 @@ sass:
 
 gems:
   - jekyll-paginate
-  - jemoji
+#  - jemoji
