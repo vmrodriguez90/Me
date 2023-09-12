@@ -1,0 +1,111 @@
+/* variables */
+:root{
+    --primary: #9CE7FC;
+}
+
+/* reset */
+*{
+    box-sizing: border-box;
+    padding: 0;
+    margin: 0%;
+}
+a{
+    text-decoration: none;
+}
+li{
+    list-style-type: none;
+}
+
+/* fonts */
+
+/* base styles */
+.container-fluid{
+    padding: 0 40px;
+    width: 100%;
+
+}
+.button{
+    display: block;
+    background-color: var(--primary);
+    color: white;
+    font-family: 'Roboto', serif;
+    font-weight: 700;
+    padding: 10px 20px;
+    border-radius: 20px;
+    cursor: pointer;
+    width: 30% ;
+    margin: 20px auto 30px;
+}
+.button:hover{
+    background-color: #9CE7FC;
+}
+.search-box{
+    border: none;
+    color: var(--primary);
+    background-color: transparent;
+    font-family: 'Medula One', cursive;
+    padding: 10px 5px;
+    font-size: 1.5em;
+}
+.search-box:focus{
+    border-width: 0px;
+    border: none;
+    outline: none;
+}
+.align-center{
+    align-items: center;
+}
+
+/* desktop styles */
+.header{
+    height: 100vh;
+    background: linear-gradient(to bottom, #87CEEB, #fff);
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    padding: 40px 0;
+    flex-flow: column nowrap;
+
+}
+.header .hero-img {
+    width: 80%;
+    margin: 0 auto 10px;
+}
+.header .hero-img img {
+    display: block;
+    width: 100%;
+}
+
+h1, h2{
+    color: #fff;
+    font-family: 'Roboto', cursive;
+    font-weight: 400;
+    font-size: 50px;
+    margin: 15px 0;
+    display: block;
+    text-align: center;
+}
+section {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-flow: column nowrap;
+    padding: 20px 0;
+}
+
+p, ul {
+    display: block;
+    margin: 10px 15px;
+    background-color: var(--primary);
+    padding: 10px 20px;
+    border-radius: 10px;
+    font-family: 'Roboto', serif;
+    font-weight: 400;
+    font-size: 1em;
+    width: 80%;
+
+}
+li {
+    margin: 15px 0;
+}
+
