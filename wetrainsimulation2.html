@@ -1,0 +1,946 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Propuesta de Refactorización — WeTrain Simulation | VMRodriguez</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,300;1,9..40,400&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg-primary: #0a0a0f;
+  --bg-secondary: #111118;
+  --bg-card: #16161f;
+  --bg-card-hover: #1c1c28;
+  --border: #2a2a3a;
+  --border-accent: #3d3d55;
+  --text-primary: #e8e8ef;
+  --text-secondary: #9a9ab0;
+  --text-muted: #6a6a82;
+  --accent: #6c63ff;
+  --accent-bright: #8b83ff;
+  --accent-glow: rgba(108, 99, 255, 0.15);
+  --accent-secondary: #00d4aa;
+  --accent-secondary-glow: rgba(0, 212, 170, 0.12);
+  --danger: #ff6b6b;
+  --warning: #ffd93d;
+  --success: #00d4aa;
+  --serif: 'Instrument Serif', Georgia, serif;
+  --sans: 'DM Sans', -apple-system, sans-serif;
+  --radius: 12px;
+  --radius-lg: 20px;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: var(--sans);
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  line-height: 1.7;
+  font-size: 16px;
+  -webkit-font-smoothing: antialiased;
+}
+
+::selection { background: var(--accent); color: #fff; }
+
+/* ─── NAV ─── */
+.topbar {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+  padding: 1rem 2rem;
+  background: rgba(10,10,15,0.8);
+  backdrop-filter: blur(20px);
+  border-bottom: 1px solid var(--border);
+  display: flex; align-items: center; justify-content: space-between;
+}
+.topbar-brand {
+  display: flex; align-items: center; gap: 0.75rem;
+  text-decoration: none; color: var(--text-primary);
+}
+.topbar-brand img { height: 28px; opacity: 0.9; }
+.topbar-brand span { font-size: 0.85rem; color: var(--text-muted); letter-spacing: 0.05em; }
+.topbar-nav { display: flex; gap: 2rem; }
+.topbar-nav a {
+  font-size: 0.82rem; color: var(--text-secondary); text-decoration: none;
+  letter-spacing: 0.04em; text-transform: uppercase; transition: color 0.3s;
+}
+.topbar-nav a:hover { color: var(--accent-bright); }
+
+/* ─── HERO ─── */
+.hero {
+  min-height: 100vh; display: flex; align-items: center; justify-content: center;
+  position: relative; overflow: hidden; padding: 6rem 2rem 4rem;
+}
+.hero::before {
+  content: ''; position: absolute; inset: 0;
+  background:
+    radial-gradient(ellipse 80% 60% at 20% 30%, rgba(108,99,255,0.08) 0%, transparent 70%),
+    radial-gradient(ellipse 60% 50% at 80% 70%, rgba(0,212,170,0.06) 0%, transparent 70%);
+}
+.hero-grid {
+  position: absolute; inset: 0; opacity: 0.03;
+  background-image:
+    linear-gradient(var(--text-muted) 1px, transparent 1px),
+    linear-gradient(90deg, var(--text-muted) 1px, transparent 1px);
+  background-size: 60px 60px;
+}
+.hero-content { position: relative; max-width: 900px; text-align: center; }
+.hero-eyebrow {
+  display: inline-flex; align-items: center; gap: 0.5rem;
+  font-size: 0.78rem; letter-spacing: 0.12em; text-transform: uppercase;
+  color: var(--accent-bright); margin-bottom: 2rem;
+  background: var(--accent-glow); border: 1px solid rgba(108,99,255,0.25);
+  padding: 0.5rem 1.25rem; border-radius: 100px;
+}
+.hero-eyebrow .dot {
+  width: 6px; height: 6px; border-radius: 50%; background: var(--accent);
+  animation: pulse 2s ease-in-out infinite;
+}
+@keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.3; } }
+.hero h1 {
+  font-family: var(--serif); font-weight: 400; font-size: clamp(2.8rem, 6vw, 5rem);
+  line-height: 1.1; margin-bottom: 1.5rem; letter-spacing: -0.02em;
+}
+.hero h1 em { font-style: italic; color: var(--accent-bright); }
+.hero-sub {
+  font-size: 1.15rem; color: var(--text-secondary); max-width: 640px;
+  margin: 0 auto 2.5rem; line-height: 1.8;
+}
+.hero-meta {
+  display: flex; gap: 3rem; justify-content: center; flex-wrap: wrap;
+  padding-top: 2rem; border-top: 1px solid var(--border);
+}
+.hero-meta-item { text-align: center; }
+.hero-meta-item .label { font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--text-muted); margin-bottom: 0.25rem; }
+.hero-meta-item .value { font-family: var(--serif); font-size: 1.3rem; color: var(--text-primary); }
+
+/* ─── SECTIONS ─── */
+.section { padding: 5rem 2rem; max-width: 1100px; margin: 0 auto; }
+.section-divider {
+  height: 1px; background: linear-gradient(90deg, transparent, var(--border-accent), transparent);
+  max-width: 1100px; margin: 0 auto;
+}
+.section-label {
+  font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.15em;
+  color: var(--accent-bright); margin-bottom: 1rem; display: flex; align-items: center; gap: 0.75rem;
+}
+.section-label::before { content: ''; width: 20px; height: 1px; background: var(--accent); }
+.section-title {
+  font-family: var(--serif); font-size: clamp(2rem, 4vw, 3rem);
+  font-weight: 400; line-height: 1.15; margin-bottom: 1.5rem;
+}
+.section-desc { color: var(--text-secondary); max-width: 700px; margin-bottom: 3rem; font-size: 1.05rem; }
+
+/* ─── PROBLEM CARDS ─── */
+.problem-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.25rem; }
+.problem-card {
+  background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius);
+  padding: 2rem; transition: all 0.3s; position: relative; overflow: hidden;
+}
+.problem-card:hover { border-color: var(--border-accent); transform: translateY(-2px); }
+.problem-card.critical { border-left: 3px solid var(--danger); }
+.problem-card.warning { border-left: 3px solid var(--warning); }
+.problem-card.info { border-left: 3px solid var(--accent); }
+.problem-card .tag {
+  font-size: 0.68rem; text-transform: uppercase; letter-spacing: 0.1em;
+  padding: 0.25rem 0.65rem; border-radius: 4px; display: inline-block; margin-bottom: 1rem;
+}
+.problem-card.critical .tag { background: rgba(255,107,107,0.12); color: var(--danger); }
+.problem-card.warning .tag { background: rgba(255,217,61,0.12); color: var(--warning); }
+.problem-card.info .tag { background: var(--accent-glow); color: var(--accent-bright); }
+.problem-card h3 { font-size: 1.1rem; margin-bottom: 0.75rem; font-weight: 600; }
+.problem-card p { color: var(--text-secondary); font-size: 0.92rem; line-height: 1.7; }
+
+/* ─── SOLUTION STACK ─── */
+.stack-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 1.25rem; }
+.stack-item {
+  background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius);
+  padding: 1.75rem; text-align: center; transition: all 0.3s;
+}
+.stack-item:hover { border-color: var(--accent); background: var(--bg-card-hover); }
+.stack-icon {
+  width: 48px; height: 48px; border-radius: 12px; margin: 0 auto 1rem;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.5rem; background: var(--accent-glow); border: 1px solid rgba(108,99,255,0.2);
+}
+.stack-item h4 { font-size: 0.95rem; margin-bottom: 0.5rem; font-weight: 600; }
+.stack-item p { font-size: 0.82rem; color: var(--text-muted); line-height: 1.6; }
+
+/* ─── PHASES / TIMELINE ─── */
+.timeline { position: relative; padding-left: 2.5rem; }
+.timeline::before {
+  content: ''; position: absolute; left: 0; top: 0; bottom: 0;
+  width: 2px; background: linear-gradient(180deg, var(--accent), var(--accent-secondary));
+  border-radius: 2px;
+}
+.timeline-phase { position: relative; margin-bottom: 3rem; }
+.timeline-phase::before {
+  content: ''; position: absolute; left: -2.65rem; top: 0.4rem;
+  width: 12px; height: 12px; border-radius: 50%;
+  background: var(--bg-primary); border: 2px solid var(--accent);
+}
+.timeline-phase:nth-child(even)::before { border-color: var(--accent-secondary); }
+.phase-header { display: flex; align-items: baseline; gap: 1rem; margin-bottom: 0.75rem; flex-wrap: wrap; }
+.phase-number {
+  font-size: 0.68rem; text-transform: uppercase; letter-spacing: 0.12em;
+  color: var(--accent-bright); background: var(--accent-glow);
+  padding: 0.3rem 0.75rem; border-radius: 100px;
+}
+.phase-duration { font-size: 0.82rem; color: var(--text-muted); }
+.timeline-phase h3 { font-size: 1.2rem; font-weight: 600; margin-bottom: 0.5rem; }
+.timeline-phase p { color: var(--text-secondary); font-size: 0.92rem; }
+.phase-tasks {
+  margin-top: 1rem; display: flex; flex-wrap: wrap; gap: 0.5rem;
+}
+.phase-task {
+  font-size: 0.78rem; padding: 0.35rem 0.85rem; border-radius: 6px;
+  background: var(--bg-card); border: 1px solid var(--border); color: var(--text-secondary);
+}
+
+/* ─── INFOGRAPHIC: SVG containers ─── */
+.infographic-container {
+  background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-lg);
+  padding: 2.5rem; margin: 2rem 0;
+}
+.infographic-title {
+  font-family: var(--serif); font-size: 1.4rem; margin-bottom: 0.5rem;
+}
+.infographic-sub { font-size: 0.85rem; color: var(--text-muted); margin-bottom: 2rem; }
+
+/* ─── PRICING TABLE ─── */
+.pricing-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem; }
+.pricing-card {
+  background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-lg);
+  padding: 2.5rem 2rem; position: relative; transition: all 0.3s;
+}
+.pricing-card:hover { transform: translateY(-4px); }
+.pricing-card.featured {
+  border-color: var(--accent); background: linear-gradient(180deg, rgba(108,99,255,0.06), var(--bg-card));
+}
+.pricing-card.featured::before {
+  content: 'RECOMENDADO'; position: absolute; top: -0.65rem; left: 50%; transform: translateX(-50%);
+  font-size: 0.65rem; letter-spacing: 0.12em; padding: 0.3rem 1rem;
+  background: var(--accent); color: #fff; border-radius: 100px;
+}
+.pricing-tier { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--text-muted); margin-bottom: 0.75rem; }
+.pricing-range { font-family: var(--serif); font-size: 1.8rem; margin-bottom: 0.25rem; }
+.pricing-usd { font-size: 0.82rem; color: var(--text-muted); margin-bottom: 1.5rem; }
+.pricing-features { list-style: none; }
+.pricing-features li {
+  font-size: 0.88rem; color: var(--text-secondary); padding: 0.5rem 0;
+  border-bottom: 1px solid rgba(42,42,58,0.5); display: flex; align-items: flex-start; gap: 0.6rem;
+}
+.pricing-features li::before { content: '✓'; color: var(--accent-secondary); font-weight: 700; flex-shrink: 0; }
+
+/* ─── COMPETITOR TABLE ─── */
+.comp-table-wrap { overflow-x: auto; margin: 2rem 0; border-radius: var(--radius); border: 1px solid var(--border); }
+.comp-table {
+  width: 100%; border-collapse: collapse; font-size: 0.85rem;
+}
+.comp-table th {
+  background: var(--bg-card); padding: 1rem; text-align: left; font-weight: 600;
+  font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-muted);
+  border-bottom: 1px solid var(--border);
+}
+.comp-table td {
+  padding: 0.85rem 1rem; border-bottom: 1px solid rgba(42,42,58,0.4); color: var(--text-secondary);
+}
+.comp-table tr:hover td { background: rgba(108,99,255,0.03); }
+.comp-table .check { color: var(--success); text-align: center; }
+.comp-table .cross { color: var(--danger); text-align: center; opacity: 0.6; }
+.comp-table .highlight-row td { background: rgba(108,99,255,0.05); color: var(--text-primary); font-weight: 500; }
+
+/* ─── PAYMENT MILESTONES ─── */
+.milestones { display: flex; gap: 1.25rem; flex-wrap: wrap; }
+.milestone {
+  flex: 1; min-width: 200px; background: var(--bg-card); border: 1px solid var(--border);
+  border-radius: var(--radius); padding: 1.75rem; text-align: center;
+}
+.milestone-pct { font-family: var(--serif); font-size: 2.5rem; color: var(--accent-bright); }
+.milestone-label { font-size: 0.82rem; color: var(--text-secondary); margin-top: 0.5rem; }
+
+/* ─── CTA ─── */
+.cta-section {
+  text-align: center; padding: 6rem 2rem;
+  background: linear-gradient(180deg, var(--bg-primary), rgba(108,99,255,0.04), var(--bg-primary));
+}
+.cta-section h2 { font-family: var(--serif); font-size: clamp(2rem, 4vw, 3rem); font-weight: 400; margin-bottom: 1rem; }
+.cta-section p { color: var(--text-secondary); max-width: 500px; margin: 0 auto 2.5rem; }
+.cta-buttons { display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; }
+.btn {
+  display: inline-flex; align-items: center; gap: 0.5rem;
+  padding: 0.85rem 2rem; border-radius: 100px; font-size: 0.88rem;
+  text-decoration: none; font-weight: 500; transition: all 0.3s; cursor: pointer; border: none;
+}
+.btn-primary { background: var(--accent); color: #fff; }
+.btn-primary:hover { background: var(--accent-bright); transform: translateY(-2px); box-shadow: 0 8px 30px rgba(108,99,255,0.3); }
+.btn-outline { background: transparent; color: var(--text-primary); border: 1px solid var(--border); }
+.btn-outline:hover { border-color: var(--accent); color: var(--accent-bright); }
+
+/* ─── FOOTER ─── */
+.footer {
+  padding: 3rem 2rem; text-align: center; border-top: 1px solid var(--border);
+  font-size: 0.8rem; color: var(--text-muted);
+}
+.footer a { color: var(--accent-bright); text-decoration: none; }
+
+/* ─── RESPONSIVE ─── */
+@media (max-width: 768px) {
+  .topbar-nav { display: none; }
+  .hero-meta { gap: 1.5rem; }
+  .section { padding: 3rem 1.25rem; }
+  .infographic-container { padding: 1.5rem; }
+  .pricing-card.featured::before { font-size: 0.6rem; }
+}
+
+/* ─── ANIMATION ─── */
+.fade-in { opacity: 0; transform: translateY(20px); transition: all 0.7s cubic-bezier(0.22, 1, 0.36, 1); }
+.fade-in.visible { opacity: 1; transform: translateY(0); }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav class="topbar">
+  <a class="topbar-brand" href="https://vmrodriguez.com.ar">
+    <img src="https://vmrodriguez.com.ar/assets/img/logo.png" alt="VMR">
+    <span>/ propuesta</span>
+  </a>
+  <div class="topbar-nav">
+    <a href="#diagnostico">Diagnóstico</a>
+    <a href="#solucion">Solución</a>
+    <a href="#fases">Fases</a>
+    <a href="#inversion">Inversión</a>
+    <a href="#contacto">Contacto</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-grid"></div>
+  <div class="hero-content fade-in">
+    <div class="hero-eyebrow"><span class="dot"></span> Propuesta Técnica — Abril 2026</div>
+    <h1>Refactorización<br>completa de<br><em>WeTrain Simulation</em></h1>
+    <p class="hero-sub">
+      Migración integral del sitio web actual (WordPress comprometido) hacia una plataforma moderna, segura y escalable — con e-commerce, integración Google Classroom, sección de publicaciones científicas y presencia digital unificada.
+    </p>
+    <div class="hero-meta">
+      <div class="hero-meta-item">
+        <div class="label">Cliente</div>
+        <div class="value">WeTrain Simulation</div>
+      </div>
+      <div class="hero-meta-item">
+        <div class="label">Consultor</div>
+        <div class="value">Victor M. Rodriguez</div>
+      </div>
+      <div class="hero-meta-item">
+        <div class="label">Duración est.</div>
+        <div class="value">12–16 semanas</div>
+      </div>
+      <div class="hero-meta-item">
+        <div class="label">Fecha</div>
+        <div class="value">10 Abril 2026</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- DIAGNÓSTICO -->
+<div class="section-divider"></div>
+<section id="diagnostico" class="section">
+  <div class="section-label">01 — Diagnóstico</div>
+  <h2 class="section-title">Estado actual del sitio</h2>
+  <p class="section-desc">
+    El sitio wetrainsimulation.com presenta múltiples problemas críticos que afectan la seguridad, el rendimiento y la conversión de visitantes a clientes.
+  </p>
+  <div class="problem-grid">
+    <div class="problem-card critical fade-in">
+      <div class="tag">Crítico</div>
+      <h3>🔓 Sitio Hackeado</h3>
+      <p>Se detectó spam SEO inyectado en múltiples páginas: enlaces a wallets de criptomonedas (Phantom, Rabby, Solflare), casinos, y sitios sospechosos de Google Sites. Vector de ataque probable: Revolution Slider desactualizado.</p>
+    </div>
+    <div class="problem-card critical fade-in">
+      <div class="tag">Crítico</div>
+      <h3>⚡ Timeouts Frecuentes</h3>
+      <p>El sitio experimenta caídas y tiempos de carga excesivos, sugiriendo código malicioso consumiendo recursos del servidor o límites del hosting en WP Engine/Flywheel.</p>
+    </div>
+    <div class="problem-card warning fade-in">
+      <div class="tag">Funcional</div>
+      <h3>🛒 Sin E-Commerce</h3>
+      <p>Las ventas de cursos y equipamiento (MTBox, kits de instrumentos) se manejan por contacto directo vía WhatsApp. No existe carrito de compras ni procesamiento de pagos online.</p>
+    </div>
+    <div class="problem-card warning fade-in">
+      <div class="tag">Funcional</div>
+      <h3>📄 Sin Publicaciones</h3>
+      <p>No existe sección de papers científicos. Competidores como Body Interact exhiben 50+ estudios validados. WeTrain no tiene ninguna presencia en PubMed, Google Scholar o ResearchGate.</p>
+    </div>
+    <div class="problem-card info fade-in">
+      <div class="tag">Estratégico</div>
+      <h3>📱 Redes Sociales Inactivas</h3>
+      <p>Facebook con 552 likes y último post de agosto 2023. Sin presencia en YouTube ni TikTok. Integración con WhatsApp limitada a un widget básico.</p>
+    </div>
+    <div class="problem-card info fade-in">
+      <div class="tag">Estratégico</div>
+      <h3>🔌 Exceso de Plugins</h3>
+      <p>WordPress con numerosos plugins (WPML, Revolution Slider, PixelYourSite, chat widgets) generando conflictos, superficie de ataque ampliada y complejidad innecesaria.</p>
+    </div>
+  </div>
+</section>
+
+<!-- INFOGRAPHIC: COMPARATIVA COMPETITIVA -->
+<div class="section-divider"></div>
+<section class="section">
+  <div class="section-label">02 — Análisis Competitivo</div>
+  <h2 class="section-title">WeTrain vs. la competencia</h2>
+  <p class="section-desc">Funcionalidades clave presentes en los principales competidores del mercado de simulación médica que WeTrain no posee actualmente.</p>
+
+  <div class="comp-table-wrap fade-in">
+    <table class="comp-table">
+      <thead>
+        <tr>
+          <th>Funcionalidad</th>
+          <th style="text-align:center">WeTrain<br><small style="color:var(--danger)">(actual)</small></th>
+          <th style="text-align:center">Oxford Med Sim</th>
+          <th style="text-align:center">Full Code</th>
+          <th style="text-align:center">Body Interact</th>
+          <th style="text-align:center">WeTrain<br><small style="color:var(--success)">(propuesta)</small></th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>E-Commerce / Checkout</td>
+          <td class="cross">✗</td><td class="check">✓</td><td class="check">✓</td><td class="check">✓</td><td class="check">✓</td>
+        </tr>
+        <tr>
+          <td>Publicaciones Científicas</td>
+          <td class="cross">✗</td><td class="check">✓</td><td class="check">✓</td><td class="check">✓</td><td class="check">✓</td>
+        </tr>
+        <tr>
+          <td>Hub de Recursos (blog + webinars)</td>
+          <td class="cross">✗</td><td class="check">✓</td><td class="check">✓</td><td class="check">✓</td><td class="check">✓</td>
+        </tr>
+        <tr>
+          <td>Integración LMS</td>
+          <td style="text-align:center; color:var(--warning)">parcial</td><td class="check">✓</td><td class="check">✓</td><td class="check">✓</td><td class="check">✓</td>
+        </tr>
+        <tr>
+          <td>Video Hero / Contenido multimedia</td>
+          <td class="cross">✗</td><td class="check">✓</td><td class="check">✓</td><td class="check">✓</td><td class="check">✓</td>
+        </tr>
+        <tr>
+          <td>Estadísticas de Impacto en Home</td>
+          <td class="cross">✗</td><td class="check">✓</td><td class="check">✓</td><td class="check">✓</td><td class="check">✓</td>
+        </tr>
+        <tr>
+          <td>Prueba gratuita / Demo</td>
+          <td class="cross">✗</td><td class="check">✓</td><td class="check">✓</td><td class="check">✓</td><td class="check">✓</td>
+        </tr>
+        <tr>
+          <td>WhatsApp Integrado</td>
+          <td style="text-align:center; color:var(--warning)">básico</td><td class="cross">✗</td><td class="cross">✗</td><td class="cross">✗</td><td class="check">✓</td>
+        </tr>
+        <tr class="highlight-row">
+          <td><strong>Total funcionalidades</strong></td>
+          <td style="text-align:center; color:var(--danger)"><strong>0.5/8</strong></td>
+          <td style="text-align:center"><strong>7/8</strong></td>
+          <td style="text-align:center"><strong>7/8</strong></td>
+          <td style="text-align:center"><strong>7/8</strong></td>
+          <td style="text-align:center; color:var(--success)"><strong>8/8</strong></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- INFOGRAPHIC: HOURS BREAKDOWN -->
+  <div class="infographic-container fade-in" style="margin-top:3rem;">
+    <div class="infographic-title">Distribución de Horas Estimadas</div>
+    <div class="infographic-sub">Total estimado: 308–480 horas de desarrollo</div>
+    <svg viewBox="0 0 800 320" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:auto;">
+      <!-- Bars -->
+      <g transform="translate(200, 0)">
+        <!-- Frontend -->
+        <rect x="0" y="10" width="360" height="28" rx="4" fill="rgba(108,99,255,0.2)"/>
+        <rect x="0" y="10" width="360" height="28" rx="4" fill="url(#bar1)" />
+        <text x="-10" y="29" text-anchor="end" fill="#9a9ab0" font-family="DM Sans" font-size="12">Frontend Dev</text>
+        <text x="370" y="29" fill="#e8e8ef" font-family="DM Sans" font-size="12" font-weight="600">80–120h</text>
+        <!-- Backend -->
+        <rect x="0" y="48" width="180" height="28" rx="4" fill="rgba(108,99,255,0.2)"/>
+        <rect x="0" y="48" width="180" height="28" rx="4" fill="url(#bar2)" />
+        <text x="-10" y="67" text-anchor="end" fill="#9a9ab0" font-family="DM Sans" font-size="12">Backend / API</text>
+        <text x="190" y="67" fill="#e8e8ef" font-family="DM Sans" font-size="12" font-weight="600">40–60h</text>
+        <!-- Google Classroom -->
+        <rect x="0" y="86" width="180" height="28" rx="4" fill="rgba(0,212,170,0.2)"/>
+        <rect x="0" y="86" width="180" height="28" rx="4" fill="url(#bar3)" />
+        <text x="-10" y="105" text-anchor="end" fill="#9a9ab0" font-family="DM Sans" font-size="12">Google Classroom</text>
+        <text x="190" y="105" fill="#e8e8ef" font-family="DM Sans" font-size="12" font-weight="600">40–60h</text>
+        <!-- UI/UX -->
+        <rect x="0" y="124" width="150" height="28" rx="4" fill="rgba(108,99,255,0.2)"/>
+        <rect x="0" y="124" width="150" height="28" rx="4" fill="url(#bar4)" />
+        <text x="-10" y="143" text-anchor="end" fill="#9a9ab0" font-family="DM Sans" font-size="12">Diseño UI/UX</text>
+        <text x="160" y="143" fill="#e8e8ef" font-family="DM Sans" font-size="12" font-weight="600">30–50h</text>
+        <!-- E-Commerce -->
+        <rect x="0" y="162" width="150" height="28" rx="4" fill="rgba(0,212,170,0.2)"/>
+        <rect x="0" y="162" width="150" height="28" rx="4" fill="url(#bar5)" />
+        <text x="-10" y="181" text-anchor="end" fill="#9a9ab0" font-family="DM Sans" font-size="12">E-Commerce</text>
+        <text x="160" y="181" fill="#e8e8ef" font-family="DM Sans" font-size="12" font-weight="600">30–50h</text>
+        <!-- Architecture -->
+        <rect x="0" y="200" width="120" height="28" rx="4" fill="rgba(108,99,255,0.2)"/>
+        <rect x="0" y="200" width="120" height="28" rx="4" fill="url(#bar6)" />
+        <text x="-10" y="219" text-anchor="end" fill="#9a9ab0" font-family="DM Sans" font-size="12">Arquitectura</text>
+        <text x="130" y="219" fill="#e8e8ef" font-family="DM Sans" font-size="12" font-weight="600">25–40h</text>
+        <!-- QA -->
+        <rect x="0" y="238" width="90" height="28" rx="4" fill="rgba(108,99,255,0.2)"/>
+        <rect x="0" y="238" width="90" height="28" rx="4" fill="url(#bar7)" />
+        <text x="-10" y="257" text-anchor="end" fill="#9a9ab0" font-family="DM Sans" font-size="12">QA / Deploy</text>
+        <text x="100" y="257" fill="#e8e8ef" font-family="DM Sans" font-size="12" font-weight="600">20–30h</text>
+        <!-- SEO -->
+        <rect x="0" y="276" width="75" height="28" rx="4" fill="rgba(0,212,170,0.2)"/>
+        <rect x="0" y="276" width="75" height="28" rx="4" fill="url(#bar8)" />
+        <text x="-10" y="295" text-anchor="end" fill="#9a9ab0" font-family="DM Sans" font-size="12">SEO / Social</text>
+        <text x="85" y="295" fill="#e8e8ef" font-family="DM Sans" font-size="12" font-weight="600">28–45h</text>
+      </g>
+      <defs>
+        <linearGradient id="bar1" x1="0%" y1="0%" x2="100%" y2="0%"><stop offset="0%" stop-color="#6c63ff"/><stop offset="100%" stop-color="#8b83ff" stop-opacity="0.7"/></linearGradient>
+        <linearGradient id="bar2" x1="0%" y1="0%" x2="100%" y2="0%"><stop offset="0%" stop-color="#6c63ff"/><stop offset="100%" stop-color="#8b83ff" stop-opacity="0.6"/></linearGradient>
+        <linearGradient id="bar3" x1="0%" y1="0%" x2="100%" y2="0%"><stop offset="0%" stop-color="#00d4aa"/><stop offset="100%" stop-color="#00d4aa" stop-opacity="0.5"/></linearGradient>
+        <linearGradient id="bar4" x1="0%" y1="0%" x2="100%" y2="0%"><stop offset="0%" stop-color="#6c63ff"/><stop offset="100%" stop-color="#8b83ff" stop-opacity="0.5"/></linearGradient>
+        <linearGradient id="bar5" x1="0%" y1="0%" x2="100%" y2="0%"><stop offset="0%" stop-color="#00d4aa"/><stop offset="100%" stop-color="#00d4aa" stop-opacity="0.4"/></linearGradient>
+        <linearGradient id="bar6" x1="0%" y1="0%" x2="100%" y2="0%"><stop offset="0%" stop-color="#6c63ff"/><stop offset="100%" stop-color="#8b83ff" stop-opacity="0.4"/></linearGradient>
+        <linearGradient id="bar7" x1="0%" y1="0%" x2="100%" y2="0%"><stop offset="0%" stop-color="#6c63ff"/><stop offset="100%" stop-color="#8b83ff" stop-opacity="0.3"/></linearGradient>
+        <linearGradient id="bar8" x1="0%" y1="0%" x2="100%" y2="0%"><stop offset="0%" stop-color="#00d4aa"/><stop offset="100%" stop-color="#00d4aa" stop-opacity="0.3"/></linearGradient>
+      </defs>
+    </svg>
+  </div>
+</section>
+
+<!-- SOLUCIÓN PROPUESTA -->
+<div class="section-divider"></div>
+<section id="solucion" class="section">
+  <div class="section-label">03 — Solución Propuesta</div>
+  <h2 class="section-title">Stack tecnológico moderno</h2>
+  <p class="section-desc">Migración completa desde WordPress hacia un stack headless que resuelve cada uno de los problemas detectados.</p>
+
+  <div class="stack-grid">
+    <div class="stack-item fade-in">
+      <div class="stack-icon">⚛️</div>
+      <h4>Next.js 14+</h4>
+      <p>Framework React con SSR/SSG para rendimiento óptimo, SEO nativo y zero-downtime deploys en Vercel.</p>
+    </div>
+    <div class="stack-item fade-in">
+      <div class="stack-icon">📝</div>
+      <h4>Sanity CMS</h4>
+      <p>CMS headless con edición en tiempo real, multi-idioma nativo (ES/EN) y esquemas personalizados para cursos y papers.</p>
+    </div>
+    <div class="stack-item fade-in">
+      <div class="stack-icon">🎓</div>
+      <h4>Google Classroom API</h4>
+      <p>Integración REST API para mostrar cursos activos, estado de inscripción y redirección directa al aula virtual.</p>
+    </div>
+    <div class="stack-item fade-in">
+      <div class="stack-icon">💳</div>
+      <h4>Mercado Pago</h4>
+      <p>Gateway de pagos líder en LATAM. Checkout Pro con cuotas, transferencia bancaria y billeteras digitales.</p>
+    </div>
+    <div class="stack-item fade-in">
+      <div class="stack-icon">💬</div>
+      <h4>WhatsApp Business API</h4>
+      <p>Botón inteligente con mensaje pre-cargado según producto/curso. Integración con catálogo de productos.</p>
+    </div>
+    <div class="stack-item fade-in">
+      <div class="stack-icon">📊</div>
+      <h4>Analytics & SEO</h4>
+      <p>Google Analytics 4, Search Console, sitemap dinámico, meta tags estructurados y Open Graph optimizado.</p>
+    </div>
+    <div class="stack-item fade-in">
+      <div class="stack-icon">🔒</div>
+      <h4>Seguridad</h4>
+      <p>Sin WordPress = sin plugins vulnerables. HTTPS, CSP headers, rate limiting y deploy inmutable en CDN global.</p>
+    </div>
+    <div class="stack-item fade-in">
+      <div class="stack-icon">🌐</div>
+      <h4>Multi-idioma</h4>
+      <p>i18n nativo con Next.js. Contenido gestionado en español e inglés desde Sanity. URLs localizadas para SEO.</p>
+    </div>
+  </div>
+
+  <!-- ARCHITECTURE INFOGRAPHIC -->
+  <div class="infographic-container fade-in" style="margin-top:3rem;">
+    <div class="infographic-title">Arquitectura del Nuevo Sistema</div>
+    <div class="infographic-sub">Desacoplado, seguro y escalable</div>
+    <svg viewBox="0 0 800 400" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:auto;">
+      <!-- User -->
+      <rect x="310" y="10" width="180" height="50" rx="25" fill="none" stroke="#6c63ff" stroke-width="1.5"/>
+      <text x="400" y="40" text-anchor="middle" fill="#e8e8ef" font-family="DM Sans" font-size="13" font-weight="600">👤 Usuario / Cirujano</text>
+
+      <!-- Arrow down -->
+      <line x1="400" y1="60" x2="400" y2="100" stroke="#3d3d55" stroke-width="1.5" stroke-dasharray="4,4"/>
+      <polygon points="395,95 405,95 400,105" fill="#3d3d55"/>
+
+      <!-- Frontend -->
+      <rect x="260" y="105" width="280" height="55" rx="12" fill="rgba(108,99,255,0.1)" stroke="#6c63ff" stroke-width="1"/>
+      <text x="400" y="127" text-anchor="middle" fill="#8b83ff" font-family="DM Sans" font-size="11" font-weight="600">FRONTEND</text>
+      <text x="400" y="147" text-anchor="middle" fill="#9a9ab0" font-family="DM Sans" font-size="11">Next.js + Vercel CDN</text>
+
+      <!-- Three arrows down -->
+      <line x1="280" y1="160" x2="130" y2="210" stroke="#3d3d55" stroke-width="1" stroke-dasharray="4,4"/>
+      <line x1="400" y1="160" x2="400" y2="210" stroke="#3d3d55" stroke-width="1" stroke-dasharray="4,4"/>
+      <line x1="520" y1="160" x2="670" y2="210" stroke="#3d3d55" stroke-width="1" stroke-dasharray="4,4"/>
+
+      <!-- CMS -->
+      <rect x="40" y="210" width="180" height="55" rx="12" fill="rgba(0,212,170,0.08)" stroke="#00d4aa" stroke-width="1"/>
+      <text x="130" y="232" text-anchor="middle" fill="#00d4aa" font-family="DM Sans" font-size="11" font-weight="600">CMS</text>
+      <text x="130" y="252" text-anchor="middle" fill="#9a9ab0" font-family="DM Sans" font-size="11">Sanity (contenido)</text>
+
+      <!-- API -->
+      <rect x="310" y="210" width="180" height="55" rx="12" fill="rgba(108,99,255,0.08)" stroke="#6c63ff" stroke-width="1"/>
+      <text x="400" y="232" text-anchor="middle" fill="#8b83ff" font-family="DM Sans" font-size="11" font-weight="600">APIs</text>
+      <text x="400" y="252" text-anchor="middle" fill="#9a9ab0" font-family="DM Sans" font-size="11">Google Classroom REST</text>
+
+      <!-- Payments -->
+      <rect x="580" y="210" width="180" height="55" rx="12" fill="rgba(255,217,61,0.08)" stroke="#ffd93d" stroke-width="1"/>
+      <text x="670" y="232" text-anchor="middle" fill="#ffd93d" font-family="DM Sans" font-size="11" font-weight="600">PAGOS</text>
+      <text x="670" y="252" text-anchor="middle" fill="#9a9ab0" font-family="DM Sans" font-size="11">Mercado Pago SDK</text>
+
+      <!-- Bottom row -->
+      <line x1="130" y1="265" x2="130" y2="315" stroke="#3d3d55" stroke-width="1" stroke-dasharray="4,4"/>
+      <line x1="400" y1="265" x2="400" y2="315" stroke="#3d3d55" stroke-width="1" stroke-dasharray="4,4"/>
+      <line x1="670" y1="265" x2="670" y2="315" stroke="#3d3d55" stroke-width="1" stroke-dasharray="4,4"/>
+
+      <!-- Bottom boxes -->
+      <rect x="40" y="315" width="180" height="50" rx="8" fill="rgba(42,42,58,0.5)" stroke="#2a2a3a" stroke-width="1"/>
+      <text x="130" y="337" text-anchor="middle" fill="#6a6a82" font-family="DM Sans" font-size="10">Cursos · Productos</text>
+      <text x="130" y="353" text-anchor="middle" fill="#6a6a82" font-family="DM Sans" font-size="10">Papers · Blog · FAQ</text>
+
+      <rect x="310" y="315" width="180" height="50" rx="8" fill="rgba(42,42,58,0.5)" stroke="#2a2a3a" stroke-width="1"/>
+      <text x="400" y="337" text-anchor="middle" fill="#6a6a82" font-family="DM Sans" font-size="10">WhatsApp Business</text>
+      <text x="400" y="353" text-anchor="middle" fill="#6a6a82" font-family="DM Sans" font-size="10">RRSS · Analytics</text>
+
+      <rect x="580" y="315" width="180" height="50" rx="8" fill="rgba(42,42,58,0.5)" stroke="#2a2a3a" stroke-width="1"/>
+      <text x="670" y="337" text-anchor="middle" fill="#6a6a82" font-family="DM Sans" font-size="10">Checkout Pro</text>
+      <text x="670" y="353" text-anchor="middle" fill="#6a6a82" font-family="DM Sans" font-size="10">Cuotas · Transfer</text>
+    </svg>
+  </div>
+</section>
+
+<!-- ESTRUCTURA DEL SITIO NUEVO -->
+<div class="section-divider"></div>
+<section class="section">
+  <div class="section-label">04 — Nuevo Sitio</div>
+  <h2 class="section-title">Estructura de páginas propuesta</h2>
+  <p class="section-desc">Reorganización completa con foco en conversión, credibilidad científica y experiencia de compra.</p>
+
+  <div class="infographic-container fade-in">
+    <div class="infographic-title">Mapa del Sitio</div>
+    <div class="infographic-sub">Páginas principales y secciones clave</div>
+    <svg viewBox="0 0 800 500" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:auto;">
+      <!-- Home node -->
+      <rect x="325" y="15" width="150" height="40" rx="20" fill="#6c63ff" />
+      <text x="400" y="40" text-anchor="middle" fill="#fff" font-family="DM Sans" font-size="12" font-weight="600">🏠 Inicio</text>
+
+      <!-- Lines to L2 -->
+      <line x1="400" y1="55" x2="100" y2="100" stroke="#3d3d55" stroke-width="1"/>
+      <line x1="400" y1="55" x2="260" y2="100" stroke="#3d3d55" stroke-width="1"/>
+      <line x1="400" y1="55" x2="400" y2="100" stroke="#3d3d55" stroke-width="1"/>
+      <line x1="400" y1="55" x2="540" y2="100" stroke="#3d3d55" stroke-width="1"/>
+      <line x1="400" y1="55" x2="700" y2="100" stroke="#3d3d55" stroke-width="1"/>
+
+      <!-- L2 nodes -->
+      <rect x="25" y="100" width="150" height="36" rx="8" fill="rgba(108,99,255,0.12)" stroke="#6c63ff" stroke-width="1"/>
+      <text x="100" y="123" text-anchor="middle" fill="#e8e8ef" font-family="DM Sans" font-size="11" font-weight="500">Quiénes Somos</text>
+
+      <rect x="185" y="100" width="150" height="36" rx="8" fill="rgba(0,212,170,0.12)" stroke="#00d4aa" stroke-width="1"/>
+      <text x="260" y="123" text-anchor="middle" fill="#e8e8ef" font-family="DM Sans" font-size="11" font-weight="500">Cursos</text>
+
+      <rect x="325" y="100" width="150" height="36" rx="8" fill="rgba(0,212,170,0.12)" stroke="#00d4aa" stroke-width="1"/>
+      <text x="400" y="123" text-anchor="middle" fill="#e8e8ef" font-family="DM Sans" font-size="11" font-weight="500">Tienda</text>
+
+      <rect x="465" y="100" width="150" height="36" rx="8" fill="rgba(255,217,61,0.12)" stroke="#ffd93d" stroke-width="1"/>
+      <text x="540" y="123" text-anchor="middle" fill="#e8e8ef" font-family="DM Sans" font-size="11" font-weight="500">Publicaciones</text>
+
+      <rect x="625" y="100" width="150" height="36" rx="8" fill="rgba(108,99,255,0.12)" stroke="#6c63ff" stroke-width="1"/>
+      <text x="700" y="123" text-anchor="middle" fill="#e8e8ef" font-family="DM Sans" font-size="11" font-weight="500">Contacto</text>
+
+      <!-- Sub-pages lines and nodes -->
+      <!-- Quiénes Somos children -->
+      <line x1="100" y1="136" x2="60" y2="175" stroke="#2a2a3a" stroke-width="1"/>
+      <line x1="100" y1="136" x2="140" y2="175" stroke="#2a2a3a" stroke-width="1"/>
+      <rect x="10" y="175" width="100" height="28" rx="6" fill="rgba(42,42,58,0.6)" stroke="#2a2a3a" stroke-width="1"/>
+      <text x="60" y="193" text-anchor="middle" fill="#9a9ab0" font-family="DM Sans" font-size="9">Historia</text>
+      <rect x="90" y="175" width="100" height="28" rx="6" fill="rgba(42,42,58,0.6)" stroke="#2a2a3a" stroke-width="1"/>
+      <text x="140" y="193" text-anchor="middle" fill="#9a9ab0" font-family="DM Sans" font-size="9">Equipo / Dr. Díaz</text>
+
+      <!-- Cursos children -->
+      <line x1="260" y1="136" x2="200" y2="175" stroke="#2a2a3a" stroke-width="1"/>
+      <line x1="260" y1="136" x2="260" y2="175" stroke="#2a2a3a" stroke-width="1"/>
+      <line x1="260" y1="136" x2="320" y2="175" stroke="#2a2a3a" stroke-width="1"/>
+      <rect x="150" y="175" width="100" height="28" rx="6" fill="rgba(42,42,58,0.6)" stroke="#2a2a3a" stroke-width="1"/>
+      <text x="200" y="193" text-anchor="middle" fill="#9a9ab0" font-family="DM Sans" font-size="9">Esencial (6m)</text>
+      <rect x="210" y="175" width="100" height="28" rx="6" fill="rgba(42,42,58,0.6)" stroke="#2a2a3a" stroke-width="1"/>
+      <text x="260" y="193" text-anchor="middle" fill="#9a9ab0" font-family="DM Sans" font-size="9">Intermedio</text>
+      <rect x="270" y="175" width="100" height="28" rx="6" fill="rgba(42,42,58,0.6)" stroke="#2a2a3a" stroke-width="1"/>
+      <text x="320" y="193" text-anchor="middle" fill="#9a9ab0" font-family="DM Sans" font-size="9">Híbrido</text>
+
+      <!-- Tienda children -->
+      <line x1="400" y1="136" x2="360" y2="175" stroke="#2a2a3a" stroke-width="1"/>
+      <line x1="400" y1="136" x2="440" y2="175" stroke="#2a2a3a" stroke-width="1"/>
+      <rect x="310" y="175" width="100" height="28" rx="6" fill="rgba(42,42,58,0.6)" stroke="#2a2a3a" stroke-width="1"/>
+      <text x="360" y="193" text-anchor="middle" fill="#9a9ab0" font-family="DM Sans" font-size="9">MTBox + Kits</text>
+      <rect x="390" y="175" width="100" height="28" rx="6" fill="rgba(42,42,58,0.6)" stroke="#2a2a3a" stroke-width="1"/>
+      <text x="440" y="193" text-anchor="middle" fill="#9a9ab0" font-family="DM Sans" font-size="9">Checkout MP</text>
+
+      <!-- Publicaciones children -->
+      <line x1="540" y1="136" x2="500" y2="175" stroke="#2a2a3a" stroke-width="1"/>
+      <line x1="540" y1="136" x2="580" y2="175" stroke="#2a2a3a" stroke-width="1"/>
+      <rect x="450" y="175" width="100" height="28" rx="6" fill="rgba(42,42,58,0.6)" stroke="#2a2a3a" stroke-width="1"/>
+      <text x="500" y="193" text-anchor="middle" fill="#9a9ab0" font-family="DM Sans" font-size="9">Papers / Blog</text>
+      <rect x="530" y="175" width="100" height="28" rx="6" fill="rgba(42,42,58,0.6)" stroke="#2a2a3a" stroke-width="1"/>
+      <text x="580" y="193" text-anchor="middle" fill="#9a9ab0" font-family="DM Sans" font-size="9">Webinars</text>
+
+      <!-- Contacto children -->
+      <line x1="700" y1="136" x2="660" y2="175" stroke="#2a2a3a" stroke-width="1"/>
+      <line x1="700" y1="136" x2="740" y2="175" stroke="#2a2a3a" stroke-width="1"/>
+      <rect x="610" y="175" width="100" height="28" rx="6" fill="rgba(42,42,58,0.6)" stroke="#2a2a3a" stroke-width="1"/>
+      <text x="660" y="193" text-anchor="middle" fill="#9a9ab0" font-family="DM Sans" font-size="9">Formulario</text>
+      <rect x="690" y="175" width="100" height="28" rx="6" fill="rgba(42,42,58,0.6)" stroke="#2a2a3a" stroke-width="1"/>
+      <text x="740" y="193" text-anchor="middle" fill="#9a9ab0" font-family="DM Sans" font-size="9">WhatsApp CTA</text>
+
+      <!-- Legend -->
+      <rect x="220" y="250" width="12" height="12" rx="2" fill="rgba(108,99,255,0.3)" stroke="#6c63ff" stroke-width="1"/>
+      <text x="240" y="261" fill="#9a9ab0" font-family="DM Sans" font-size="10">Institucional</text>
+      <rect x="330" y="250" width="12" height="12" rx="2" fill="rgba(0,212,170,0.3)" stroke="#00d4aa" stroke-width="1"/>
+      <text x="350" y="261" fill="#9a9ab0" font-family="DM Sans" font-size="10">Conversión / Ventas</text>
+      <rect x="480" y="250" width="12" height="12" rx="2" fill="rgba(255,217,61,0.3)" stroke="#ffd93d" stroke-width="1"/>
+      <text x="500" y="261" fill="#9a9ab0" font-family="DM Sans" font-size="10">Credibilidad Científica</text>
+    </svg>
+  </div>
+</section>
+
+<!-- FASES -->
+<div class="section-divider"></div>
+<section id="fases" class="section">
+  <div class="section-label">05 — Plan de Ejecución</div>
+  <h2 class="section-title">Fases del proyecto</h2>
+  <p class="section-desc">Metodología ágil con entregas incrementales. Cada fase incluye revisión y aprobación del cliente antes de avanzar.</p>
+
+  <div class="timeline">
+    <div class="timeline-phase fade-in">
+      <div class="phase-header">
+        <span class="phase-number">Fase 1</span>
+        <span class="phase-duration">Semanas 1–2</span>
+      </div>
+      <h3>Discovery & Arquitectura</h3>
+      <p>Relevamiento detallado de requerimientos, definición de arquitectura técnica, configuración de entornos de desarrollo, diseño de esquemas de datos en Sanity, y planificación del sprint backlog completo.</p>
+      <div class="phase-tasks">
+        <span class="phase-task">Kick-off meeting</span>
+        <span class="phase-task">Wireframes</span>
+        <span class="phase-task">Setup repositorio</span>
+        <span class="phase-task">Esquemas CMS</span>
+        <span class="phase-task">Entorno staging</span>
+      </div>
+    </div>
+
+    <div class="timeline-phase fade-in">
+      <div class="phase-header">
+        <span class="phase-number">Fase 2</span>
+        <span class="phase-duration">Semanas 3–5</span>
+      </div>
+      <h3>Diseño UI/UX & Prototipo</h3>
+      <p>Diseño visual completo en Figma respetando la identidad de marca de WeTrain. Prototipo interactivo de las páginas principales. Aprobación del cliente antes de desarrollo.</p>
+      <div class="phase-tasks">
+        <span class="phase-task">Design system</span>
+        <span class="phase-task">Homepage</span>
+        <span class="phase-task">Páginas internas</span>
+        <span class="phase-task">Mobile responsive</span>
+        <span class="phase-task">Prototipo Figma</span>
+      </div>
+    </div>
+
+    <div class="timeline-phase fade-in">
+      <div class="phase-header">
+        <span class="phase-number">Fase 3</span>
+        <span class="phase-duration">Semanas 6–10</span>
+      </div>
+      <h3>Desarrollo Core</h3>
+      <p>Implementación del frontend en Next.js, integración con Sanity CMS, desarrollo del módulo de e-commerce con Mercado Pago, integración con Google Classroom API, y sección de publicaciones científicas.</p>
+      <div class="phase-tasks">
+        <span class="phase-task">Next.js pages</span>
+        <span class="phase-task">Sanity Studio</span>
+        <span class="phase-task">Mercado Pago</span>
+        <span class="phase-task">Google Classroom</span>
+        <span class="phase-task">Papers section</span>
+        <span class="phase-task">WhatsApp API</span>
+        <span class="phase-task">i18n ES/EN</span>
+      </div>
+    </div>
+
+    <div class="timeline-phase fade-in">
+      <div class="phase-header">
+        <span class="phase-number">Fase 4</span>
+        <span class="phase-duration">Semanas 11–12</span>
+      </div>
+      <h3>Migración de Contenido & SEO</h3>
+      <p>Migración del contenido existente desde WordPress, redirecciones 301, configuración de GA4 y Search Console, optimización de meta tags, sitemap XML, y schema markup para cursos médicos.</p>
+      <div class="phase-tasks">
+        <span class="phase-task">Migración contenido</span>
+        <span class="phase-task">Redirecciones 301</span>
+        <span class="phase-task">GA4 + Pixel</span>
+        <span class="phase-task">Schema.org</span>
+        <span class="phase-task">Sitemap XML</span>
+      </div>
+    </div>
+
+    <div class="timeline-phase fade-in">
+      <div class="phase-header">
+        <span class="phase-number">Fase 5</span>
+        <span class="phase-duration">Semanas 13–14</span>
+      </div>
+      <h3>QA, Testing & Lanzamiento</h3>
+      <p>Testing integral cross-browser y mobile, pruebas de carga, revisión de seguridad, UAT con el equipo de WeTrain, deploy a producción en Vercel, y monitoreo post-launch por 2 semanas.</p>
+      <div class="phase-tasks">
+        <span class="phase-task">Testing E2E</span>
+        <span class="phase-task">Performance audit</span>
+        <span class="phase-task">Security review</span>
+        <span class="phase-task">UAT cliente</span>
+        <span class="phase-task">Go-live</span>
+        <span class="phase-task">Monitoreo 2 sem.</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- INVERSIÓN -->
+<div class="section-divider"></div>
+<section id="inversion" class="section">
+  <div class="section-label">06 — Inversión</div>
+  <h2 class="section-title">Planes de inversión</h2>
+  <p class="section-desc">Tres opciones adaptadas a diferentes niveles de alcance y presupuesto. Todos los montos en Pesos Argentinos (ARS) con equivalencia en USD al tipo de cambio abril 2026.</p>
+
+  <div class="pricing-grid">
+    <div class="pricing-card fade-in">
+      <div class="pricing-tier">Esencial</div>
+      <div class="pricing-range">$3.500.000 – $5.000.000</div>
+      <div class="pricing-usd">≈ USD 2.500 – 3.571</div>
+      <ul class="pricing-features">
+        <li>Sitio Next.js con 6 páginas principales</li>
+        <li>CMS headless (Sanity) básico</li>
+        <li>Diseño responsive (mobile-first)</li>
+        <li>Integración WhatsApp + redes sociales</li>
+        <li>SEO on-page básico</li>
+        <li>Deploy en Vercel</li>
+        <li>1 idioma (español)</li>
+      </ul>
+    </div>
+
+    <div class="pricing-card featured fade-in">
+      <div class="pricing-tier">Profesional</div>
+      <div class="pricing-range">$5.000.000 – $8.000.000</div>
+      <div class="pricing-usd">≈ USD 3.571 – 5.714</div>
+      <ul class="pricing-features">
+        <li>Todo lo del plan Esencial</li>
+        <li>E-commerce con Mercado Pago</li>
+        <li>Integración Google Classroom API</li>
+        <li>Sección de publicaciones científicas</li>
+        <li>Blog con editor rico</li>
+        <li>Multi-idioma completo (ES/EN)</li>
+        <li>GA4 + Facebook Pixel avanzado</li>
+        <li>2 semanas de soporte post-launch</li>
+      </ul>
+    </div>
+
+    <div class="pricing-card fade-in">
+      <div class="pricing-tier">Premium</div>
+      <div class="pricing-range">$8.000.000 – $12.000.000</div>
+      <div class="pricing-usd">≈ USD 5.714 – 8.571</div>
+      <ul class="pricing-features">
+        <li>Todo lo del plan Profesional</li>
+        <li>Diseño UI/UX premium con Figma completo</li>
+        <li>Animaciones y microinteracciones</li>
+        <li>Dashboard interno de métricas</li>
+        <li>A/B testing framework</li>
+        <li>Automatizaciones email (bienvenida, carrito abandonado)</li>
+        <li>Capacitación del equipo WeTrain en Sanity</li>
+        <li>4 semanas de soporte post-launch</li>
+      </ul>
+    </div>
+  </div>
+
+  <div style="margin-top:3.5rem;">
+    <h3 style="font-family:var(--serif); font-size:1.4rem; margin-bottom:1.5rem;">Estructura de Pagos</h3>
+    <div class="milestones">
+      <div class="milestone fade-in">
+        <div class="milestone-pct">40%</div>
+        <div class="milestone-label">Al inicio del proyecto<br><small style="color:var(--text-muted)">(Firma de contrato)</small></div>
+      </div>
+      <div class="milestone fade-in">
+        <div class="milestone-pct">30%</div>
+        <div class="milestone-label">Aprobación de diseño<br><small style="color:var(--text-muted)">(Fin de Fase 2)</small></div>
+      </div>
+      <div class="milestone fade-in">
+        <div class="milestone-pct">30%</div>
+        <div class="milestone-label">Lanzamiento<br><small style="color:var(--text-muted)">(Go-live en producción)</small></div>
+      </div>
+    </div>
+    <p style="margin-top:1.5rem; font-size:0.88rem; color:var(--text-muted); max-width:700px;">
+      <strong style="color:var(--text-secondary);">Nota sobre inflación:</strong> Los montos en ARS incluirán una cláusula de ajuste vinculada al tipo de cambio oficial USD/ARS del Banco Nación al momento de cada hito de pago, garantizando equidad para ambas partes durante la duración del proyecto.
+    </p>
+  </div>
+</section>
+
+<!-- GARANTÍAS -->
+<div class="section-divider"></div>
+<section class="section">
+  <div class="section-label">07 — Garantías</div>
+  <h2 class="section-title">Qué incluye el servicio</h2>
+  <div class="problem-grid" style="margin-top:2rem;">
+    <div class="problem-card info fade-in">
+      <h3>📋 Código Fuente</h3>
+      <p>Entrega completa del repositorio con documentación técnica. El código es propiedad de WeTrain Simulation al finalizar el proyecto.</p>
+    </div>
+    <div class="problem-card info fade-in">
+      <h3>🎓 Capacitación</h3>
+      <p>Sesiones de capacitación para que el equipo de WeTrain pueda gestionar contenido, cursos y productos de forma autónoma vía Sanity CMS.</p>
+    </div>
+    <div class="problem-card info fade-in">
+      <h3>🛡️ Soporte Post-Launch</h3>
+      <p>Período de soporte técnico incluido para resolver bugs, ajustes menores y asegurar estabilidad post-lanzamiento (según plan elegido).</p>
+    </div>
+    <div class="problem-card info fade-in">
+      <h3>📄 Documentación</h3>
+      <p>Manual de uso del CMS, guía de deployment, documentación de APIs integradas y runbook de operaciones para el equipo técnico.</p>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section id="contacto" class="cta-section">
+  <h2>¿Avanzamos?</h2>
+  <p>Estoy disponible para agendar una reunión y resolver cualquier duda sobre esta propuesta.</p>
+  <div class="cta-buttons">
+    <a href="https://wa.me/5491123952534?text=Hola%20Victor%2C%20quiero%20avanzar%20con%20la%20propuesta%20de%20WeTrain" class="btn btn-primary" target="_blank">💬 WhatsApp</a>
+    <a href="mailto:victormanuelrodriguez90@gmail.com?subject=Propuesta%20WeTrain%20Simulation" class="btn btn-outline">✉️ Email</a>
+    <a href="https://calendar.app.google/SbNHkCf1XaFxvH6P9" class="btn btn-outline" target="_blank">📅 Agendar Reunión</a>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer class="footer">
+  <p>Propuesta preparada por <a href="https://vmrodriguez.com.ar" target="_blank">Victor Manuel Rodriguez</a> — Technical Principal</p>
+  <p style="margin-top:0.5rem;">Buenos Aires, Argentina · Abril 2026 · Documento confidencial</p>
+</footer>
+
+<!-- SCROLL ANIMATIONS -->
+<script>
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      entry.target.classList.add('visible');
+    }
+  });
+}, { threshold: 0.1, rootMargin: '0px 0px -50px 0px' });
+
+document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+</script>
+</body>
+</html>

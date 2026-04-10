@@ -1,0 +1,625 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WeTrain Simulation - Auditoría y Propuesta de Refactorización 2026 | VM Rodriguez</title>
+    <meta name="description" content="Auditoría completa del sitio comprometido de WeTrain Simulation y propuesta técnica de reconstrucción moderna con alcance, arquitectura y presupuesto en ARS.">
+    <meta name="author" content="VM Rodriguez">
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,600;1,600&display=swap" rel="stylesheet">
+    
+    <!-- Scripts -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <style>
+        :root {
+            --bg-primary: #050505;
+            --bg-secondary: #0d0d0d;
+            --accent: #ffffff;
+            --text-muted: #737373;
+            --border-dim: #1a1a1a;
+            --medical-blue: #0ea5e9;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-primary);
+            color: #ffffff;
+            scroll-behavior: smooth;
+        }
+
+        .serif {
+            font-family: 'Playfair Display', serif;
+        }
+
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 600px;
+            margin: auto;
+            height: 380px;
+        }
+
+        .nav-link {
+            transition: color 0.3s ease;
+            letter-spacing: 0.1em;
+        }
+
+        .glass-card {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-dim);
+            transition: border-color 0.4s ease;
+        }
+
+        .cta-button {
+            background: #ffffff;
+            color: #000000;
+            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .cta-button:hover {
+            transform: translateY(-2px);
+            background: var(--medical-blue);
+            color: #ffffff;
+            box-shadow: 0 15px 30px -10px rgba(14, 165, 233, 0.4);
+        }
+
+        .payment-pill {
+            font-size: 10px;
+            letter-spacing: 0.1em;
+            border: 1px solid #262626;
+            padding: 4px 12px;
+            border-radius: 4px;
+            color: #a3a3a3;
+            background: #111;
+        }
+
+        ::selection {
+            background: var(--medical-blue);
+            color: white;
+        }
+
+        ::-webkit-scrollbar { width: 0px; background: transparent; }
+    </style>
+</head>
+<body class="antialiased">
+
+    <!-- Header -->
+    <nav class="fixed top-0 w-full z-50 bg-black/80 backdrop-blur-xl border-b border-white/5 py-6 px-10">
+        <div class="max-w-7xl mx-auto flex justify-between items-center">
+            <div class="flex items-center gap-4">
+                <span class="text-lg font-bold tracking-tighter">VM RODRIGUEZ</span>
+                <span class="text-zinc-800 text-lg">/</span>
+                <span class="text-zinc-500 text-[10px] font-bold tracking-[0.4em] uppercase">Auditoría WeTrain 2026</span>
+            </div>
+            <div class="hidden md:flex space-x-12 text-[10px] font-bold uppercase tracking-widest text-zinc-500">
+                <a href="#contexto" class="nav-link hover:text-white">Contexto</a>
+                <a href="#hallazgos" class="nav-link hover:text-white">Hallazgos</a>
+                <a href="#solucion" class="nav-link hover:text-white">Solución</a>
+                <a href="#fases" class="nav-link hover:text-white">Fases</a>
+                <a href="#inversion" class="nav-link hover:text-white">Inversión</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <header class="max-w-7xl mx-auto px-10 pt-48 pb-24 border-b border-white/5">
+        <div class="max-w-4xl">
+            <h4 class="text-sky-500 text-xs font-bold uppercase tracking-[0.5em] mb-8">Auditoría Completa + Inteligencia para Refactorización</h4>
+            <h1 class="text-6xl md:text-8xl font-bold leading-[0.9] tracking-tighter mb-10">
+                WeTrain <br> <span class="serif italic text-zinc-800 font-normal">Simulation 2026</span>.
+            </h1>
+            <p class="text-xl text-zinc-500 max-w-2xl leading-relaxed mb-12">
+                Reconstrucción estratégica del sitio de WeTrain Simulation para resolver compromiso de seguridad activo, recuperar performance, habilitar e-commerce y posicionar la marca frente a competidores globales de simulación médica.
+            </p>
+            <div class="flex flex-wrap gap-3">
+                <div class="payment-pill">Virtual • Continuo • Tutorizado</div>
+                <div class="payment-pill">Buenos Aires, Argentina</div>
+                <div class="payment-pill">Mercado LATAM y Global</div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Contexto de negocio -->
+    <section id="contexto" class="max-w-7xl mx-auto px-10 py-24">
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            <div class="glass-card rounded-xl p-8">
+                <h3 class="text-lg font-semibold mb-4">Empresa y propuesta de valor</h3>
+                <p class="text-sm text-zinc-400 leading-relaxed">
+                    WeTrain Simulation entrena cirujanos en CMI con un modelo virtual de 6 meses. Su diferencial es el envío mundial de hardware propietario: MTBox y endocámara USB con luz integrada para evaluación remota.
+                </p>
+            </div>
+            <div class="glass-card rounded-xl p-8">
+                <h3 class="text-lg font-semibold mb-4">Audiencias y alcance</h3>
+                <p class="text-sm text-zinc-400 leading-relaxed">
+                    Público objetivo en cirugía pediátrica, general, ginecología, urología y veterinaria. Testimonios y actividad comercial en Argentina, Colombia, Venezuela, Paraguay y Honduras.
+                </p>
+            </div>
+            <div class="glass-card rounded-xl p-8">
+                <h3 class="text-lg font-semibold mb-4">Operación actual</h3>
+                <p class="text-sm text-zinc-400 leading-relaxed">
+                    El contenido asincrónico ya corre en Google Classroom. Las ventas hoy se convierten por contacto directo, sin checkout digital para cursos o productos.
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Hallazgos -->
+    <section id="hallazgos" class="max-w-7xl mx-auto px-10 py-24 border-y border-white/5">
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-24 items-start">
+            <div>
+                <h2 class="text-4xl font-bold mb-8">Hallazgos críticos de auditoría.</h2>
+                <p class="text-zinc-500 mb-10 leading-relaxed">
+                    El sitio WordPress actual presenta inyección de spam SEO activa, timeouts frecuentes y brechas funcionales que impactan conversión y reputación. La prioridad es estabilizar y reconstruir sobre una arquitectura segura y escalable.
+                </p>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    <div class="p-6 glass-card rounded-xl">
+                        <span class="text-sky-500 font-bold text-xl block mb-2">Seguridad comprometida</span>
+                        <p class="text-xs text-zinc-500 leading-relaxed">Páginas con enlaces maliciosos y spam SEO inyectado (cripto/casino), señal de explotación de plugins o stack desactualizado.</p>
+                    </div>
+                    <div class="p-6 glass-card rounded-xl">
+                        <span class="text-sky-500 font-bold text-xl block mb-2">Brecha de producto digital</span>
+                        <p class="text-xs text-zinc-500 leading-relaxed">Sin e-commerce, sin hub robusto de publicaciones, sin estrategia de redes integrada para adquisición continua.</p>
+                    </div>
+                    <div class="p-6 glass-card rounded-xl">
+                        <span class="text-sky-500 font-bold text-xl block mb-2">Competencia avanzada</span>
+                        <p class="text-xs text-zinc-500 leading-relaxed">Competidores líderes ya operan con demo funnels, pricing visible, research hubs y recorrido omnicanal.</p>
+                    </div>
+                    <div class="p-6 glass-card rounded-xl">
+                        <span class="text-sky-500 font-bold text-xl block mb-2">Oportunidad inmediata</span>
+                        <p class="text-xs text-zinc-500 leading-relaxed">WeTrain ya tiene método validado, contenido y alcance regional. Falta capitalizarlo con plataforma moderna orientada a conversión.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="glass-card p-12 rounded-3xl">
+                <div class="chart-container">
+                    <canvas id="riskChart"></canvas>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Benchmark competitivo -->
+    <section class="max-w-7xl mx-auto px-10 py-24">
+        <div class="max-w-4xl mb-12">
+            <h2 class="text-4xl font-bold mb-6">Benchmark competitivo.</h2>
+            <p class="text-zinc-500 leading-relaxed">
+                Los principales players del sector ya operan con e-commerce, research hubs y embudos de demo. Esta matriz resume la brecha funcional actual y el objetivo del nuevo sitio.
+            </p>
+        </div>
+        <div class="overflow-x-auto border border-zinc-800 rounded-2xl bg-black">
+            <table class="min-w-full text-sm">
+                <thead class="bg-zinc-900 text-zinc-400 uppercase tracking-widest text-[10px]">
+                    <tr>
+                        <th class="text-left p-4">Funcionalidad</th>
+                        <th class="text-center p-4">WeTrain actual</th>
+                        <th class="text-center p-4">Oxford / Full Code / Body</th>
+                        <th class="text-center p-4">Objetivo WeTrain</th>
+                    </tr>
+                </thead>
+                <tbody class="text-zinc-300">
+                    <tr class="border-t border-zinc-800">
+                        <td class="p-4">E-commerce / checkout</td>
+                        <td class="p-4 text-center text-red-400">No</td>
+                        <td class="p-4 text-center text-emerald-400">Sí</td>
+                        <td class="p-4 text-center text-sky-400">Sí</td>
+                    </tr>
+                    <tr class="border-t border-zinc-800">
+                        <td class="p-4">Publicaciones científicas y casos</td>
+                        <td class="p-4 text-center text-red-400">No</td>
+                        <td class="p-4 text-center text-emerald-400">Sí</td>
+                        <td class="p-4 text-center text-sky-400">Sí</td>
+                    </tr>
+                    <tr class="border-t border-zinc-800">
+                        <td class="p-4">Hub de recursos (blog / webinars)</td>
+                        <td class="p-4 text-center text-red-400">Parcial</td>
+                        <td class="p-4 text-center text-emerald-400">Sí</td>
+                        <td class="p-4 text-center text-sky-400">Sí</td>
+                    </tr>
+                    <tr class="border-t border-zinc-800">
+                        <td class="p-4">Embudo de demo / CTA conversión</td>
+                        <td class="p-4 text-center text-red-400">No</td>
+                        <td class="p-4 text-center text-emerald-400">Sí</td>
+                        <td class="p-4 text-center text-sky-400">Sí</td>
+                    </tr>
+                    <tr class="border-t border-zinc-800">
+                        <td class="p-4">Integración LMS / Classroom</td>
+                        <td class="p-4 text-center text-amber-400">Parcial</td>
+                        <td class="p-4 text-center text-emerald-400">Sí</td>
+                        <td class="p-4 text-center text-sky-400">Sí</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
+
+    <!-- Solución -->
+    <section id="solucion" class="max-w-7xl mx-auto px-10 py-24">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-16 items-center">
+            <div class="chart-container order-2 md:order-1">
+                <canvas id="impactChart"></canvas>
+            </div>
+            <div class="order-1 md:order-2">
+                <h2 class="text-3xl font-bold mb-6 italic serif">Arquitectura recomendada y alcance funcional.</h2>
+                <p class="text-zinc-500 leading-relaxed mb-8">
+                    Stack recomendado: Next.js + CMS headless (Strapi o Sanity) + integración con Google Classroom API + e-commerce con Mercado Pago. Esta base reduce superficie de ataque y habilita crecimiento comercial sostenido.
+                </p>
+                <div class="space-y-4 text-sm text-zinc-300">
+                    <div class="flex items-center gap-4">
+                        <div class="w-2 h-2 rounded-full bg-sky-500"></div>
+                        <span class="font-medium">Migración total del contenido clave (ES/EN) con SEO técnico moderno</span>
+                    </div>
+                    <div class="flex items-center gap-4">
+                        <div class="w-2 h-2 rounded-full bg-sky-500"></div>
+                        <span class="font-medium">Checkout de cursos/productos con pagos en ARS y experiencia mobile-first</span>
+                    </div>
+                    <div class="flex items-center gap-4">
+                        <div class="w-2 h-2 rounded-full bg-sky-500"></div>
+                        <span class="font-medium">Sección de publicaciones: blog, casos, resultados y futuro repositorio científico</span>
+                    </div>
+                    <div class="flex items-center gap-4">
+                        <div class="w-2 h-2 rounded-full bg-sky-500"></div>
+                        <span class="font-medium">Integración social: WhatsApp, Instagram, Facebook, LinkedIn, embudos de contacto</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Fases -->
+    <section id="fases" class="max-w-7xl mx-auto px-10 py-24 border-y border-white/5">
+        <div class="max-w-4xl mb-12">
+            <h2 class="text-4xl font-bold mb-6">Plan de ejecución por fases.</h2>
+            <p class="text-zinc-500 leading-relaxed">
+                Metodología incremental con validación de WeTrain en cada etapa. Duración estimada total: 12 a 16 semanas según alcance final y velocidad de feedback.
+            </p>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+            <div class="glass-card rounded-xl p-7">
+                <p class="text-[10px] uppercase tracking-widest text-sky-500 font-bold mb-3">Fase 1 · Semanas 1-2</p>
+                <h3 class="text-lg font-semibold mb-3">Discovery y arquitectura</h3>
+                <p class="text-sm text-zinc-400">Relevamiento técnico, definición de arquitectura, setup de entorno y diseño de modelo de contenido CMS.</p>
+            </div>
+            <div class="glass-card rounded-xl p-7">
+                <p class="text-[10px] uppercase tracking-widest text-sky-500 font-bold mb-3">Fase 2 · Semanas 3-5</p>
+                <h3 class="text-lg font-semibold mb-3">UI/UX y prototipo</h3>
+                <p class="text-sm text-zinc-400">Diseño visual completo y prototipo responsive para validación de navegación, jerarquía de contenido y mensajes comerciales.</p>
+            </div>
+            <div class="glass-card rounded-xl p-7">
+                <p class="text-[10px] uppercase tracking-widest text-sky-500 font-bold mb-3">Fase 3 · Semanas 6-10</p>
+                <h3 class="text-lg font-semibold mb-3">Desarrollo core</h3>
+                <p class="text-sm text-zinc-400">Build en Next.js, integración CMS, módulo de e-commerce, Google Classroom API, contenidos ES/EN y medición analítica.</p>
+            </div>
+            <div class="glass-card rounded-xl p-7">
+                <p class="text-[10px] uppercase tracking-widest text-sky-500 font-bold mb-3">Fase 4 · Semanas 11-12</p>
+                <h3 class="text-lg font-semibold mb-3">Migración y SEO</h3>
+                <p class="text-sm text-zinc-400">Migración de páginas clave, redirecciones 301, optimización metadata, sitemap y hardening técnico para lanzamiento.</p>
+            </div>
+            <div class="glass-card rounded-xl p-7">
+                <p class="text-[10px] uppercase tracking-widest text-sky-500 font-bold mb-3">Fase 5 · Semanas 13-14</p>
+                <h3 class="text-lg font-semibold mb-3">QA y go-live</h3>
+                <p class="text-sm text-zinc-400">Testing funcional, performance y seguridad; salida a producción; monitoreo de estabilización y soporte inicial post-lanzamiento.</p>
+            </div>
+            <div class="glass-card rounded-xl p-7">
+                <p class="text-[10px] uppercase tracking-widest text-sky-500 font-bold mb-3">Entregables</p>
+                <h3 class="text-lg font-semibold mb-3">Código + documentación</h3>
+                <p class="text-sm text-zinc-400">Repositorio del proyecto, documentación técnica, capacitación operativa y guía de gestión de contenidos para el equipo interno.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Inversion -->
+    <section id="inversion" class="bg-zinc-900/10 py-32 border-y border-white/5">
+        <div class="max-w-7xl mx-auto px-10">
+            <div class="flex flex-col md:flex-row justify-between items-end mb-20 gap-8">
+                <h2 class="text-5xl font-bold italic serif">Propuesta económica (mercado argentino).</h2>
+                <div class="text-right">
+                    <p class="text-zinc-500 text-[10px] uppercase tracking-widest mb-1">Rango recomendado para alcance completo</p>
+                    <p class="text-4xl font-bold">$ 5.000.000 - $ 8.000.000 <span class="text-sm font-normal text-zinc-600">ARS</span></p>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-16">
+                <div class="glass-card rounded-xl p-8">
+                    <p class="text-[10px] text-zinc-500 font-bold uppercase tracking-widest mb-2">Plan Esencial</p>
+                    <h3 class="text-2xl font-bold mb-2">$3.500.000 - $5.000.000</h3>
+                    <p class="text-xs text-zinc-500 mb-5">USD 2.500 - 3.571 aprox.</p>
+                    <ul class="space-y-2 text-sm text-zinc-400">
+                        <li>• Sitio Next.js + CMS base</li>
+                        <li>• Diseño responsive</li>
+                        <li>• Integración WhatsApp y RRSS</li>
+                        <li>• SEO técnico inicial</li>
+                    </ul>
+                </div>
+                <div class="glass-card rounded-xl p-8 border-sky-500/50">
+                    <p class="text-[10px] text-sky-500 font-bold uppercase tracking-widest mb-2">Plan Profesional (recomendado)</p>
+                    <h3 class="text-2xl font-bold mb-2">$5.000.000 - $8.000.000</h3>
+                    <p class="text-xs text-zinc-500 mb-5">USD 3.571 - 5.714 aprox.</p>
+                    <ul class="space-y-2 text-sm text-zinc-300">
+                        <li>• Todo el Esencial</li>
+                        <li>• E-commerce con Mercado Pago</li>
+                        <li>• Google Classroom API</li>
+                        <li>• Publicaciones científicas + blog</li>
+                        <li>• ES/EN completo + analítica avanzada</li>
+                    </ul>
+                </div>
+                <div class="glass-card rounded-xl p-8">
+                    <p class="text-[10px] text-zinc-500 font-bold uppercase tracking-widest mb-2">Plan Premium</p>
+                    <h3 class="text-2xl font-bold mb-2">$8.000.000 - $12.000.000</h3>
+                    <p class="text-xs text-zinc-500 mb-5">USD 5.714 - 8.571 aprox.</p>
+                    <ul class="space-y-2 text-sm text-zinc-400">
+                        <li>• Todo el Profesional</li>
+                        <li>• UX/UI ampliado y microinteracciones</li>
+                        <li>• Testing extendido y soporte mayor</li>
+                        <li>• Automatizaciones de marketing</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                <div class="glass-card rounded-xl p-8">
+                    <h3 class="text-2xl font-bold mb-6">Cómo se cobra el proyecto</h3>
+                    <div class="space-y-4">
+                        <div class="flex items-start gap-4">
+                            <div class="text-3xl font-bold text-sky-500 leading-none">40%</div>
+                            <p class="text-sm text-zinc-400 pt-1">Al inicio, con firma de acuerdo y reserva de agenda del proyecto.</p>
+                        </div>
+                        <div class="flex items-start gap-4">
+                            <div class="text-3xl font-bold text-sky-500 leading-none">30%</div>
+                            <p class="text-sm text-zinc-400 pt-1">Al aprobar diseño/prototipo y habilitar desarrollo completo.</p>
+                        </div>
+                        <div class="flex items-start gap-4">
+                            <div class="text-3xl font-bold text-sky-500 leading-none">30%</div>
+                            <p class="text-sm text-zinc-400 pt-1">Con lanzamiento en producción y entrega de handoff técnico.</p>
+                        </div>
+                    </div>
+                    <p class="text-xs text-zinc-500 mt-6">
+                        Los montos en ARS contemplan cláusula de actualización vinculada al tipo de cambio oficial para proyectos de ejecución extendida.
+                    </p>
+                </div>
+                <div class="glass-card rounded-xl p-8">
+                    <h3 class="text-2xl font-bold mb-6">Horas estimadas por bloque</h3>
+                    <ul class="space-y-3 text-sm text-zinc-300">
+                        <li class="flex justify-between border-b border-zinc-800 pb-2"><span>Arquitectura / planificación</span><span class="text-zinc-500">25-40h</span></li>
+                        <li class="flex justify-between border-b border-zinc-800 pb-2"><span>Diseño UI/UX</span><span class="text-zinc-500">30-50h</span></li>
+                        <li class="flex justify-between border-b border-zinc-800 pb-2"><span>Frontend</span><span class="text-zinc-500">80-120h</span></li>
+                        <li class="flex justify-between border-b border-zinc-800 pb-2"><span>Backend / API</span><span class="text-zinc-500">40-60h</span></li>
+                        <li class="flex justify-between border-b border-zinc-800 pb-2"><span>Google Classroom + e-commerce</span><span class="text-zinc-500">70-110h</span></li>
+                        <li class="flex justify-between"><span>QA + deploy + SEO</span><span class="text-zinc-500">48-75h</span></li>
+                    </ul>
+                    <p class="text-xs text-zinc-500 mt-6">Total referencial: 308-480 horas.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Terminos -->
+    <section id="comercial" class="max-w-7xl mx-auto px-10 py-32">
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-24">
+            <div class="space-y-12">
+                <h2 class="text-4xl font-bold serif italic">Modelo de trabajo y entregables.</h2>
+                <div class="space-y-8">
+                    <div class="flex gap-6 items-start">
+                        <div class="w-10 h-10 border border-sky-500/30 rounded-full flex items-center justify-center text-sky-500 font-bold shrink-0">1</div>
+                        <div>
+                            <h4 class="text-sm font-bold uppercase tracking-widest mb-1">Hito 1 - 40% Inicio</h4>
+                            <p class="text-sm text-zinc-500">Kickoff, auditoría técnica de seguridad, definición de arquitectura y roadmap detallado del proyecto.</p>
+                        </div>
+                    </div>
+                    <div class="flex gap-6 items-start">
+                        <div class="w-10 h-10 border border-sky-500/30 rounded-full flex items-center justify-center text-sky-500 font-bold shrink-0">2</div>
+                        <div>
+                            <h4 class="text-sm font-bold uppercase tracking-widest mb-1">Hito 2 - 30% Diseño validado</h4>
+                            <p class="text-sm text-zinc-500">Aprobación de prototipo funcional, definición de contenidos migrados y activación de integraciones principales.</p>
+                        </div>
+                    </div>
+                    <div class="flex gap-6 items-start">
+                        <div class="w-10 h-10 border border-sky-500/30 rounded-full flex items-center justify-center text-sky-500 font-bold shrink-0">3</div>
+                        <div>
+                            <h4 class="text-sm font-bold uppercase tracking-widest mb-1">Hito 3 - 30% Lanzamiento</h4>
+                            <p class="text-sm text-zinc-500">Deploy productivo, QA final, capacitación operativa y cierre con documentación técnica.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="glass-card p-10 rounded-2xl flex flex-col justify-between">
+                <div>
+                    <h3 class="text-xl font-bold mb-6">Consideraciones de continuidad</h3>
+                    <p class="text-zinc-400 text-sm leading-relaxed mb-6">
+                        Se recomienda cláusula de actualización por tipo de cambio oficial ARS/USD para proyectos de varios meses y contexto inflacionario local.
+                    </p>
+                    <div class="p-6 bg-zinc-900/50 rounded-lg border border-zinc-800">
+                        <p class="text-[10px] uppercase tracking-[0.2em] text-zinc-500 mb-2 font-bold">Soporte mensual opcional</p>
+                        <p class="text-3xl font-bold">$ 100.000 <span class="text-xs font-normal text-zinc-500">/ mes base</span></p>
+                        <ul class="mt-4 space-y-2 text-[10px] text-zinc-500">
+                            <li>• Monitoreo de uptime y salud básica</li>
+                            <li>• Ajustes menores de contenido y SEO on-page</li>
+                            <li>• Soporte operativo del CMS y publicaciones</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="mt-10 border-t border-zinc-800 pt-6">
+                    <h4 class="text-[10px] font-bold uppercase tracking-widest text-zinc-600 mb-4">Tecnologías objetivo</h4>
+                    <div class="flex flex-wrap gap-2">
+                        <span class="payment-pill">Next.js</span>
+                        <span class="payment-pill">Strapi / Sanity</span>
+                        <span class="payment-pill">Mercado Pago</span>
+                        <span class="payment-pill">Google Classroom API</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Garantías -->
+    <section class="max-w-7xl mx-auto px-10 pb-24">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div class="glass-card rounded-xl p-7">
+                <h3 class="text-lg font-semibold mb-3">Código y propiedad</h3>
+                <p class="text-sm text-zinc-400">Entrega completa del repositorio y acceso a infraestructura del proyecto al cierre de implementación.</p>
+            </div>
+            <div class="glass-card rounded-xl p-7">
+                <h3 class="text-lg font-semibold mb-3">Capacitación operativa</h3>
+                <p class="text-sm text-zinc-400">Sesiones para que el equipo gestione contenido, cursos, productos y publicaciones desde el CMS.</p>
+            </div>
+            <div class="glass-card rounded-xl p-7">
+                <h3 class="text-lg font-semibold mb-3">Soporte post-lanzamiento</h3>
+                <p class="text-sm text-zinc-400">Ventana inicial de soporte para ajustes y estabilización luego del go-live en producción.</p>
+            </div>
+            <div class="glass-card rounded-xl p-7">
+                <h3 class="text-lg font-semibold mb-3">Documentación</h3>
+                <p class="text-sm text-zinc-400">Guía técnica, flujos de publicación, checklist SEO y referencias de integraciones activas.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer CTA -->
+    <footer class="bg-white text-black py-40 px-10 text-center">
+        <div class="max-w-3xl mx-auto">
+            <h2 class="text-5xl md:text-7xl font-bold tracking-tighter mb-12 serif italic">¿Avanzamos con la propuesta?</h2>
+            
+            <div class="flex flex-col md:flex-row justify-center gap-6">
+                <a href="https://wa.me/5491123952534" 
+                   class="cta-button px-12 py-6 rounded-full font-bold text-[10px] uppercase tracking-[0.3em] inline-block">
+                    Contactarme por WhatsApp
+                </a>
+                <a href="https://calendar.app.google/SbNHkCf1XaFxvH6P9" class="border border-zinc-200 px-12 py-6 rounded-full font-bold text-[10px] uppercase tracking-[0.3em] inline-block hover:bg-zinc-50 transition-colors">
+                    Agendar una reunión
+                </a>
+            </div>
+            
+            <div class="mt-32 pt-10 border-t border-zinc-100 flex flex-col md:flex-row justify-between items-center gap-4">
+                <span class="text-[10px] font-bold tracking-widest text-zinc-400">© 2026 VM RODRIGUEZ</span>
+                <span class="text-[10px] font-bold tracking-widest text-zinc-400">BUENOS AIRES, ARGENTINA</span>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Label Wrapping Utility
+        function wrapLabels(labels, limit = 16) {
+            return labels.map(label => {
+                if (label.length <= limit) return label;
+                const words = label.split(' ');
+                const lines = [];
+                let current = '';
+                words.forEach(word => {
+                    if ((current + word).length > limit) {
+                        lines.push(current.trim());
+                        current = word + ' ';
+                    } else {
+                        current += word + ' ';
+                    }
+                });
+                if (current) lines.push(current.trim());
+                return lines;
+            });
+        }
+
+        // Shared Tooltip Config
+        const tooltipConfig = {
+            plugins: {
+                tooltip: {
+                    backgroundColor: '#000',
+                    titleColor: '#0ea5e9',
+                    padding: 15,
+                    titleFont: { size: 14, weight: 'bold' },
+                    borderColor: '#222',
+                    borderWidth: 1,
+                    displayColors: false,
+                    callbacks: {
+                        title: (items) => {
+                            const label = items[0].chart.data.labels[items[0].dataIndex];
+                            return Array.isArray(label) ? label.join(' ') : label;
+                        }
+                    }
+                }
+            }
+        };
+
+        window.onload = function() {
+            // Radar Chart: Risk exposure
+            const elRisk = document.getElementById('riskChart');
+            if (elRisk) {
+                new Chart(elRisk.getContext('2d'), {
+                    type: 'radar',
+                    data: {
+                        labels: wrapLabels(['Seguridad', 'Performance', 'Conversión', 'Escalabilidad', 'Autoridad de Marca'], 16),
+                        datasets: [
+                            {
+                                label: 'Estado actual (riesgo)',
+                                data: [9, 8, 7, 8, 6],
+                                backgroundColor: 'rgba(255, 255, 255, 0.05)',
+                                borderColor: '#333',
+                                borderWidth: 1,
+                                pointRadius: 0
+                            },
+                            {
+                                label: 'Post refactor (riesgo esperado)',
+                                data: [3, 2, 3, 2, 2],
+                                backgroundColor: 'rgba(14, 165, 233, 0.1)',
+                                borderColor: '#0ea5e9',
+                                borderWidth: 2,
+                                pointBackgroundColor: '#0ea5e9'
+                            }
+                        ]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        scales: {
+                            r: {
+                                angleLines: { color: '#1a1a1a' },
+                                grid: { color: '#1a1a1a' },
+                                pointLabels: { color: '#666', font: { size: 10 } },
+                                ticks: { display: false },
+                                suggestedMin: 0,
+                                suggestedMax: 10
+                            }
+                        },
+                        plugins: {
+                            legend: { position: 'bottom', labels: { color: '#555', font: { size: 10 } } },
+                            ...tooltipConfig.plugins
+                        }
+                    }
+                });
+            }
+
+            // Bar Chart: Scope effort estimate (hours)
+            const elImpact = document.getElementById('impactChart');
+            if (elImpact) {
+                new Chart(elImpact.getContext('2d'), {
+                    type: 'bar',
+                    data: {
+                        labels: wrapLabels(['Arquitectura y plan', 'UI/UX y frontend', 'Backend e integraciones', 'QA y despliegue'], 16),
+                        datasets: [{
+                            label: 'Horas estimadas',
+                            data: [32, 100, 150, 26],
+                            backgroundColor: ['#1a1a1a', '#1a1a1a', '#0ea5e9', '#1a1a1a'],
+                            borderRadius: 4,
+                            barThickness: 24
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        scales: {
+                            x: { grid: { display: false }, ticks: { color: '#666' } },
+                            y: { grid: { color: '#111' }, ticks: { color: '#fff' } }
+                        },
+                        plugins: {
+                            legend: { display: false },
+                            ...tooltipConfig.plugins
+                        }
+                    }
+                });
+            }
+        };
+    </script>
+</body>
+</html>
