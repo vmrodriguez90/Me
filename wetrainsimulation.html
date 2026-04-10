@@ -178,7 +178,7 @@
             </div>
             <div class="glass-card p-12 rounded-3xl">
                 <div class="chart-container">
-                    <canvas id="riskChart"></canvas>
+                    <canvas id="improvementChart"></canvas>
                 </div>
             </div>
         </div>
@@ -543,25 +543,25 @@
         };
 
         window.onload = function() {
-            // Radar Chart: Risk exposure
-            const elRisk = document.getElementById('riskChart');
-            if (elRisk) {
-                new Chart(elRisk.getContext('2d'), {
+            // Radar Chart: Improvement potential (higher is better)
+            const elImprovement = document.getElementById('improvementChart');
+            if (elImprovement) {
+                new Chart(elImprovement.getContext('2d'), {
                     type: 'radar',
                     data: {
-                        labels: wrapLabels(['Seguridad', 'Performance', 'Conversión', 'Escalabilidad', 'Autoridad de Marca'], 16),
+                        labels: wrapLabels(['Seguridad', 'Performance', 'Conversión', 'Escalabilidad', 'Autoridad Digital'], 16),
                         datasets: [
                             {
-                                label: 'Estado actual (riesgo)',
-                                data: [9, 8, 7, 8, 6],
+                                label: 'Estado actual (base)',
+                                data: [3, 2, 3, 2, 4],
                                 backgroundColor: 'rgba(255, 255, 255, 0.05)',
                                 borderColor: '#333',
                                 borderWidth: 1,
                                 pointRadius: 0
                             },
                             {
-                                label: 'Post refactor (riesgo esperado)',
-                                data: [3, 2, 3, 2, 2],
+                                label: 'Post refactor (objetivo)',
+                                data: [9, 8, 9, 9, 8],
                                 backgroundColor: 'rgba(14, 165, 233, 0.1)',
                                 borderColor: '#0ea5e9',
                                 borderWidth: 2,
